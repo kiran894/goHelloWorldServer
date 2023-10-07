@@ -1,0 +1,53 @@
+pipeline:
+  name: Build Test and Push
+  identifier: Build_Test_and_Push
+  projectIdentifier: citest
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: account.Github
+        repoName: https://github.com/kiran894/goHelloWorldServer.git
+        build: <+input>
+  stages:
+    - stage:
+        name: Build Test and Push
+        identifier: Build_Test_and_Push
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Run Unit Tests
+                  identifier: Run_Unit_Tests
+                  spec:
+                    connectorRef: My_Docker
+                    image: golang:1.15
+                    shell: Sh
+                    command: |-
+                      go get gotest.tools/gotestsum
+                      gotestsum --format=standard-verbose --junitfile unit-tests.xml || true
+                      CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -tags netgo
+                    reports:
+                      type: JUnit
+                      spec:
+                        paths:
+                          - "*.xml"
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: Build and push to Docker
+                  identifier: Build_and_push_to_Docker
+                  spec:
+                    connectorRef: My_Docker
+                    repo: kiranteneti/ci_tutorial_repo
+                    tags:
+                      - <+pipeline.sequenceId>
