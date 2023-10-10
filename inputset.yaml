@@ -1,0 +1,15 @@
+inputSet:
+  name: inputset
+  identifier: inputset
+  orgIdentifier: default
+  projectIdentifier: citest
+  pipeline:
+    identifier: Build_Test_and_Push
+    properties:
+      ci:
+        codebase:
+          build:
+            type: branch
+            spec:
+              branch: main
+  object Object: pipeline.properties.ci.codebase
