@@ -1,0 +1,9 @@
+overlayInputSet:
+  name: overlay
+  identifier: overlay
+  orgIdentifier: default
+  projectIdentifier: citest
+  pipelineIdentifier: Build_Test_and_Push
+  inputSetReferences:
+    - inputset
+  tags: {}
